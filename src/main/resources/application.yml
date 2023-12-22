@@ -1,0 +1,10 @@
+spring:
+  data:
+    redis:
+      lettuce:
+        cluster:
+          refresh:
+            adaptive: true
+      cluster:
+        max-redirects: 2
+        nodes: master.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com:6379,replica.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com:6379
