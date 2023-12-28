@@ -1,13 +1,34 @@
 spring:
   data:
+    #  cache:
+    #    type: none
     redis:
-      lettuce:
-        cluster:
-          refresh:
-            adaptive: true
-      cluster:
-        max-redirects: 2
-        nodes: master.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com:6379,replica.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com:6379
+      #    enable: false
+      host: master.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com
+      port: 6379
+      connect-timeout: 3000
+      key-prefix: "jobkorea.redis.lib:"
+      time-to-live: 3600
+      username: jk-dev-svc-01-redis-admin
+      password: gwZca30EjKVv0qKK
+      ssl:
+        enabled: true
+      disable-peer-verification: true
+      eager-initialization: true
+      replica:
+        nodes:
+          - host: replica.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com
+            port: 6379
+      client-options:
+        socket-options:
+          keep-alive:
+            enable: true
+          connection-timeout: 3
+        timeout-options:
+          timeout: 10000
+      pool:
+        enabled: true
+
 
 springdoc:
   swagger-ui:

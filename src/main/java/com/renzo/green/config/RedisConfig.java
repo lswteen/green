@@ -1,19 +1,21 @@
 package com.renzo.green.config;
 
-import io.lettuce.core.ReadFrom;
-import io.lettuce.core.cluster.ClusterClientOptions;
-import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.boot.autoconfigure.data.redis.LettuceClientConfigurationBuilderCustomizer;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.CacheKeyPrefix;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -22,37 +24,99 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
-    @Value("${spring.data.redis.cluster.nodes}")
-    private List<String> clusterNodes;
+
+    private final RedisCacheProperties cacheProperties;
+    private final RedisProperties redisProperties;
+
+    /**
+     * clientConfigurationBuilder 확장 구현을 위한 method
+     *
+     * @param clientConfigurationBuilder LettuceClientConfigurationBuilder
+     * @param cacheProperties            RedisCacheProperties
+     */
+    void externalConfigurationClientConfigurationBuilder(
+            LettuceClientConfiguration.LettuceClientConfigurationBuilder clientConfigurationBuilder,
+            RedisCacheProperties cacheProperties) {
+        log.debug("MasterReplica Type ReadFrom : {}", cacheProperties.getReplica().getReadFrom());
+        clientConfigurationBuilder.readFrom(cacheProperties.getReplica().getReadFrom());
+    }
+
+    /**
+     * LettuceClientConfigurationBuilder 에 대한 Customizer 를 생성하여 적용합니다.
+     *
+     * @param cacheProperties RedisCacheProperties
+     * @return LettuceClientConfigurationBuilderCustomizer
+     */
+    protected LettuceClientConfigurationBuilderCustomizer createLettuceClientConfigurationBuilderCustomizer(
+            RedisCacheProperties cacheProperties) {
+        return clientConfigurationBuilder -> {
+            if (clientConfigurationBuilder.build().isUseSsl() &&
+                    Boolean.TRUE.equals(cacheProperties.getDisablePeerVerification())) {
+                clientConfigurationBuilder.useSsl().disablePeerVerification();
+            }
+            externalConfigurationClientConfigurationBuilder(clientConfigurationBuilder, cacheProperties);
+        };
+    }
+
+    protected LettuceClientConfiguration.LettuceClientConfigurationBuilder createPoolingConfigurationBuilder(
+            RedisCacheProperties.Pool poolProperties) {
+        log.info("LettuceClientConfigurationBuilder - Pooling Configuration Builder");
+        var poolConfig = new GenericObjectPoolConfig();
+        poolConfig.setMaxIdle(poolProperties.getMaxIdle());
+        poolConfig.setMinIdle(poolProperties.getMinIdle());
+        poolConfig.setMaxTotal(poolProperties.getMaxActive());
+        poolConfig.setMaxWait(Duration.ofMillis(poolProperties.getMaxWait()));
+        poolConfig.setTimeBetweenEvictionRuns(Duration.ofMillis(poolProperties.getTimeBetweenEvictionRuns()));
+        return LettucePoolingClientConfiguration.builder()
+                .poolConfig(poolConfig);
+    }
+
+    protected boolean isPoolEnable(RedisCacheProperties.Pool poolProperties) {
+        return poolProperties != null && poolProperties.getEnabled();
+    }
+
+    protected LettuceClientConfiguration.LettuceClientConfigurationBuilder createDefaultClientConfigurationBuilder() {
+        log.info("LettuceClientConfigurationBuilder - Default Configuration Builder");
+        return LettuceClientConfiguration.builder();
+    }
+
+    protected LettuceClientConfiguration createLettuceClientConfiguration(RedisCacheProperties cacheProperties) {
+        var builder = isPoolEnable(cacheProperties.getPool()) ?
+                createPoolingConfigurationBuilder(cacheProperties.getPool()) :
+                createDefaultClientConfigurationBuilder();
+
+        if (Boolean.TRUE.equals(cacheProperties.getSsl().getEnabled())) {
+            builder.useSsl();
+        }
+        createLettuceClientConfigurationBuilderCustomizer(cacheProperties).customize(builder);
+        builder.clientOptions(new ClientOptionFactory(cacheProperties.getClientOptions()).create());
+        return builder.build();
+    }
+
 
     // lettuce 사용시
     @Bean
     public RedisConnectionFactory redisConnectionFactory(){
-        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
-            .clientOptions(ClusterClientOptions.builder()
-                .topologyRefreshOptions(ClusterTopologyRefreshOptions.builder()
-                    .refreshPeriod(Duration.ofMinutes(1))
-                    .enableAdaptiveRefreshTrigger()
-                    .enablePeriodicRefresh(true)
-                    .build())
-                .build())
-            .readFrom(ReadFrom.REPLICA_PREFERRED) // 복제본 노드에서 읽지 만 사용할 수없는 경우 마스터에서 읽습니다.
-            .build();
+        log.debug("RedisConnectionFactory Type : MasterReplica");
+        var properties = redisProperties;
+        var masterReplicaConfiguration
+                = new RedisStaticMasterReplicaConfiguration(properties.getHost(), properties.getPort());
+        masterReplicaConfiguration.setUsername(properties.getUsername());
+        masterReplicaConfiguration.setPassword(properties.getPassword());
 
+        cacheProperties.getReplica().getNodes().forEach(node -> masterReplicaConfiguration
+                .addNode(node.getHost(), node.getPort()));
 
-        // 모든 클러스터(master, slave) 정보를 적는다. (해당 서버중 접속되는 서버에서 cluster nodes 명령어를 통해 모든 클러스터 정보를 읽어오기에 다운 됐을 경우를 대비하여 모든 노드 정보를 적어두는편이 좋다.)
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
-
-//                .clusterNode("master.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com", 6379)
-//                .clusterNode("replica.jk-dev-svc-01-redis.fmrgu1.apn2.cache.amazonaws.com", 6379);
-
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
-        return lettuceConnectionFactory;
+        var result = new LettuceConnectionFactory(masterReplicaConfiguration,
+                createLettuceClientConfiguration(cacheProperties));
+        result.setEagerInitialization(cacheProperties.getEagerInitialization());
+        return result;
     }
 
     @Bean
@@ -88,7 +152,6 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-
         return redisTemplate;
     }
 

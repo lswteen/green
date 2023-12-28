@@ -1,13 +1,34 @@
 spring:
   data:
+    #  cache:
+    #    type: none
     redis:
-      lettuce:
-        cluster:
-          refresh:
-            adaptive: true
-      cluster:
-        max-redirects: 2
+      #    enable: false
+      host:
+      port: 6379
+      connect-timeout: 3000
+      key-prefix: "green.redis.lib:"
+      time-to-live: 3600
+      username:
+      password:
+      ssl:
+        enabled: true
+      disable-peer-verification: true
+      eager-initialization: true
+      replica:
         nodes:
+          - host:
+            port: 6379
+      client-options:
+        socket-options:
+          keep-alive:
+            enable: true
+          connection-timeout: 3
+        timeout-options:
+          timeout: 10000
+      pool:
+        enabled: true
+
 
 springdoc:
   swagger-ui:

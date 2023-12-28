@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.renzo.green.GreenApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-12-22T06:34:51" hostname="MI-1-renzo1980.local" time="1.177">
+<testsuite name="com.renzo.green.GreenApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-12-28T02:19:04" hostname="MI-1-renzo1980.local" time="1.112">
   <properties/>
-  <testcase name="contextLoads()" classname="com.renzo.green.GreenApplicationTests" time="1.177"/>
-  <system-out><![CDATA[15:34:47.481 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.renzo.green.GreenApplicationTests]: GreenApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-15:34:47.660 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.renzo.green.GreenApplication for test class com.renzo.green.GreenApplicationTests
+  <testcase name="contextLoads()" classname="com.renzo.green.GreenApplicationTests" time="1.112"/>
+  <system-out><![CDATA[11:18:58.398 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.renzo.green.GreenApplicationTests]: GreenApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+11:18:58.582 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.renzo.green.GreenApplication for test class com.renzo.green.GreenApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -13,12 +13,13 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.0)
 
-2023-12-22T15:34:48.233+09:00  INFO 53073 --- [    Test worker] com.renzo.green.GreenApplicationTests    : Starting GreenApplicationTests using Java 21.0.1 with PID 53073 (started by renzo in /Users/renzo/jobkorea-workspace/green)
-2023-12-22T15:34:48.235+09:00  INFO 53073 --- [    Test worker] com.renzo.green.GreenApplicationTests    : No active profile set, falling back to 1 default profile: "default"
-2023-12-22T15:34:49.371+09:00  INFO 53073 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2023-12-22T15:34:49.374+09:00  INFO 53073 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2023-12-22T15:34:49.422+09:00  INFO 53073 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 32 ms. Found 0 Redis repository interfaces.
-2023-12-22T15:34:51.468+09:00  INFO 53073 --- [    Test worker] com.renzo.green.GreenApplicationTests    : Started GreenApplicationTests in 3.657 seconds (process running for 5.488)
+2023-12-28T11:18:59.186+09:00  INFO 42052 --- [    Test worker] com.renzo.green.GreenApplicationTests    : Starting GreenApplicationTests using Java 21.0.1 with PID 42052 (started by renzo in /Users/renzo/jobkorea-workspace/green)
+2023-12-28T11:18:59.189+09:00  INFO 42052 --- [    Test worker] com.renzo.green.GreenApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2023-12-28T11:19:00.653+09:00  INFO 42052 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-12-28T11:19:00.656+09:00  INFO 42052 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-12-28T11:19:00.713+09:00  INFO 42052 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 41 ms. Found 0 Redis repository interfaces.
+2023-12-28T11:19:01.359+09:00  INFO 42052 --- [    Test worker] com.renzo.green.config.RedisConfig       : LettuceClientConfigurationBuilder - Pooling Configuration Builder
+2023-12-28T11:19:04.882+09:00  INFO 42052 --- [    Test worker] com.renzo.green.GreenApplicationTests    : Started GreenApplicationTests in 6.144 seconds (process running for 7.919)
 ]]></system-out>
   <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/renzo/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.14.10/90ed94ac044ea8953b224304c762316e91fd6b31/byte-buddy-agent-1.14.10.jar)
 WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning

@@ -1,12 +1,10 @@
 package com.renzo.green.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
 @Getter
-@Builder
+@Setter
 public class RedisData {
     private String key;
     private String value;

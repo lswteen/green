@@ -1,12 +1,12 @@
 package com.renzo.green.persistence;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RedisDataPersistence {
     private String key;
     private String value;
