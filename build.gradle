@@ -23,8 +23,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-	//implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
-
 	//apache pool
 	implementation 'org.apache.commons:commons-pool2:2.12.0'
 
@@ -35,6 +33,12 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	// spring boot test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// testcontainers
+	testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+	testImplementation "org.testcontainers:testcontainers:1.19.3"
+	testImplementation "org.testcontainers:junit-jupiter:1.19.3"
+
 	//apache commons lang
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	//api config
