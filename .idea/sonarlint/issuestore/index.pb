@@ -12,9 +12,19 @@ X
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-G
-redis/config/redis.conf,d/7/d7c8dce0a7790ca26c35a3f039ce68b887c2d635
 9
 	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 `
 0src/main/java/com/renzo/green/dto/RedisData.java,f/b/fbbadeeeb655cea84d8db88e61e1d605f0c0e18a
+c
+3src/main/java/com/renzo/green/GreenApplication.java,6/8/688734940f6c049cc972fa8f3e2ae004fb9d47a4
+m
+=src/main/java/com/renzo/green/config/ClientOptionFactory.java,e/a/ea6de8704d9ccebe766309e4c283a9fd271924f3
+h
+8src/test/java/com/renzo/green/GreenApplicationTests.java,6/0/602301415404ce4542319bd84d47b1622921f628
+c
+3src/main/java/com/renzo/green/config/ApiConfig.java,0/3/03418f41729bf14237692db03f4e77d1b5d74ec2
+b
+2src/main/java/com/renzo/green/config/CacheKey.java,7/8/781405c7ab22960cc09991d57ecbe29b6722e5fb
+s
+Csrc/main/java/com/renzo/green/persistence/RedisDataPersistence.java,2/a/2ae6a7d8baa30b6ebb55faacf75a325579d736cc

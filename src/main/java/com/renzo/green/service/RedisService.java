@@ -17,7 +17,7 @@ public class RedisService {
         try{
             redisTemplate.opsForValue().set(persistence.getKey(), persistence);
         }catch (Exception e){
-            e.printStackTrace();
+
             log.error("### Redis Set Key Error !!! ::: {}", e.getMessage());
         }
     }
@@ -27,7 +27,7 @@ public class RedisService {
         try{
             redisDataPersistence = (RedisDataPersistence)redisTemplate.opsForValue().get(key);
         }catch (Exception e){
-            e.printStackTrace();
+
             log.error("### Redis Set Key Error !!! ::: {}", e.getMessage());
         }
         return redisDataPersistence;

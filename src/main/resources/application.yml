@@ -4,20 +4,20 @@ spring:
     #    type: none
     redis:
       #    enable: false
-      host:
+      host: localhost
       port: 6379
       connect-timeout: 3000
-      key-prefix: "green.redis.lib:"
+      key-prefix: "green.redis:"
       time-to-live: 3600
       username:
       password:
       ssl:
-        enabled: true
+        enabled: false
       disable-peer-verification: true
       eager-initialization: true
       replica:
         nodes:
-          - host:
+          - host: localhost
             port: 6379
       client-options:
         socket-options:
@@ -28,6 +28,7 @@ spring:
           timeout: 10000
       pool:
         enabled: true
+
 
 
 springdoc:

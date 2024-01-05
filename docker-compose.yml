@@ -1,29 +1,30 @@
-version: '3.1'
-
+version: '3.7'
 services:
-
-  redis:
-    image: redis
-    container_name: rediscache
+  redis-master:
+    image: redis:latest
+    hostname: redis-master
+    volumes:
+      - redis_master:/data
     ports:
-      - 6380:6379
-    networks:
-      - spring-net
+      - '6379:6379'
 
-  spring-testcontainers-app:
-    image: spring-testcontainers-app
-    container_name: spring-testcontainers-app
-    build: .
-    restart: always
-    environment:
-      REDIS_HOST: rediscache
-      REDOS_PORT: 6379
+  redis-slave:
+    image: redis:latest
+    hostname: redis-slave
+    volumes:
+      - redis_slave:/data
     ports:
-      - 8080:8080
-    depends_on:
-      - redis
-    networks:
-      - spring-net
+      - '6479:6479'
+    command: redis-server --slaveof redis-master 6379
 
-networks:
-  spring-net:
+  redis-ui:
+    image: patrikx3/p3x-redis-ui:latest
+    ports:
+      - 7843:7843
+    volumes:
+      # here you can set your own /home/user/p3x-redis-ui-settings folder
+      - /home/user/p3x-redis-ui-settings:/settings
+
+volumes:
+  redis_master:
+  redis_slave:
